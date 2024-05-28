@@ -1,0 +1,143 @@
+---
+interface Props {
+	title: string;
+	href: string;
+	imgSrc: string;
+	genero: string;
+	srcBeat: string;
+}
+
+const { href, title, imgSrc, genero, srcBeat } = Astro.props;
+---
+
+<li class="link-card">
+
+	<a href={href}>
+		<img src={imgSrc} alt="">
+		<div class="flex flex-col">
+			<h2 class="sm:text-sm">
+				{title}
+			</h2>
+			<h3>
+				{genero}
+			</h3>
+		</div>
+	</a>
+
+	<div class="play-btn-container">
+		<audio class="audio" controls style="display: none;">
+			<source src={srcBeat} type="audio/mp3">
+		</audio>
+		
+		<div class="customAudioControls">
+			<button class="playButton" id="playButton">
+				<ion-icon class="sm:text-3xl text-white p-2" name="play-circle-outline"></ion-icon>
+			</button>
+			<button class="pauseButton hidden" id="pauseButton">
+				<ion-icon class="sm:text-3xl text-white p-2" name="pause-circle-outline"></ion-icon>
+			</button>
+		</div>
+	</div>
+
+</li>
+
+<script>
+	// Obtener referencias a todos los botones de reproducción y pausa
+const playButtons = document.querySelectorAll('.playButton');
+const pauseButtons = document.querySelectorAll('.pauseButton');
+const audioPlayers = document.querySelectorAll('.audio');
+
+// Función para detener todos los demás audios excepto el clic actual
+function stopOtherAudios(currentAudio) {
+    audioPlayers.forEach(audio => {
+        if (audio !== currentAudio) {
+            audio.pause(); // Pausar el audio
+            const playButton = audio.parentElement.querySelector('.playButton');
+            const pauseButton = audio.parentElement.querySelector('.pauseButton');
+            playButton.classList.remove('hidden'); // Mostrar botón de reproducción
+            pauseButton.classList.add('hidden'); // Ocultar botón de pausa
+        }
+    });
+}
+
+// Variable para almacenar el índice del tema actualmente reproduciéndose
+let currentPlayingIndex = null;
+
+// Agregar event listeners a todos los botones de reproducción
+playButtons.forEach((playButton, index) => {
+    playButton.addEventListener('click', function() {
+        // Si ya hay un tema reproduciéndose y no es el mismo que el que se está reproduciendo ahora, detenerlo y reiniciar su tiempo
+        if (currentPlayingIndex !== null && currentPlayingIndex !== index) {
+            audioPlayers[currentPlayingIndex].pause();
+            audioPlayers[currentPlayingIndex].currentTime = 0;
+            const playButton = playButtons[currentPlayingIndex];
+            playButton.classList.remove('hidden');
+            const pauseButton = pauseButtons[currentPlayingIndex];
+            pauseButton.classList.add('hidden');
+        }
+
+        // Guardar el índice del tema actualmente reproduciéndose
+        currentPlayingIndex = index;
+
+        // Ocultar botón de reproducción y mostrar botón de pausa
+        playButton.classList.add('hidden');
+        // Encontrar el botón de pausa asociado y mostrarlo
+        const pauseButton = playButton.nextElementSibling;
+        pauseButton.classList.remove('hidden');
+
+        // Reproducir el audio asociado
+        audioPlayers[index].play();
+    });
+});
+
+// Agregar event listeners a todos los botones de pausa
+pauseButtons.forEach((pauseButton, index) => {
+    pauseButton.addEventListener('click', function() {
+        // Ocultar botón de pausa y mostrar botón de reproducción
+        pauseButton.classList.add('hidden');
+        // Encontrar el botón de reproducción asociado y mostrarlo
+        const playButton = pauseButton.previousElementSibling;
+        playButton.classList.remove('hidden');
+
+        // Pausar el audio asociado
+        audioPlayers[index].pause();
+    });
+});
+</script>
+
+<style>
+	.link-card{
+		width: 100%;
+		height: 80px;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		background: #2c2c2c;
+	}
+	.link-card > a{
+		width: 90%;
+		height: 100%;
+		color: blue;
+		display: flex;
+		align-items: center;
+		padding-left: 15px;
+		gap: 10px;
+		color: #f1f1f1;
+	}
+	.link-card > a img{
+		width: 50px;
+		height: 50px;
+	}
+
+	.play-btn-container{
+		height: 100%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background: none;
+	}
+	.play-btn-container:focus-within{
+		background: var(--principal);
+	}
+
+</style>
