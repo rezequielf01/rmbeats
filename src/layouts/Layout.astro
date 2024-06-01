@@ -17,13 +17,16 @@ const { title } = Astro.props;
 		<title>{title}</title>
 	</head>
 	<body>
-		<slot />
+		<slot name="main" />
 
+		
 		<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
 		<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 	</body>
 </html>
+
 <style is:global>
+
 	:root {
 		--accent: 136, 58, 234;
 		--principal: #a70000;
@@ -51,5 +54,62 @@ const { title } = Astro.props;
 			Bitstream Vera Sans Mono,
 			Courier New,
 			monospace;
+	}
+
+	/* GENEROS CARDS */
+	.genero-card{
+		width: 200px;
+		max-width: 200px;
+		height: 200px;
+		max-height: 200px;
+	}
+	.genero-card__a{
+		width: 200px;
+		height: 200px;
+		background: none;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: space-between;
+		box-sizing: border-box;
+		padding: 0;
+		margin: 0;
+	}
+	.genero-card__img{
+		width: 100%;
+		height: 80%;
+		box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+	}
+	.genero-card__title{
+		width: 100%;
+		height: 20%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		text-align: start;
+	}
+
+	/* BEAT CARDS */
+	.beat-card{
+		width: 100%;
+		height: 80px;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		background: #2c2c2c;
+	}
+	.beat-card__a{
+		width: 90%;
+		height: 100%;
+		color: blue;
+		display: flex;
+		align-items: center;
+		padding-left: 15px;
+		gap: 10px;
+		color: #f1f1f1;
+	}
+	.beat-card__img{
+		width: 50px;
+		height: 50px;
 	}
 </style>

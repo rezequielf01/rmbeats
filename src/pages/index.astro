@@ -5,7 +5,7 @@ import Cardsong from '../components/Cardsong.astro';
 ---
 
 <Layout title="RM Beats">
-	<main>
+	<main slot="main">
 
 		<section class="hero-container">
 
@@ -37,34 +37,209 @@ import Cardsong from '../components/Cardsong.astro';
 
 			<h2 class="text-white sm:pl-3 sm:text-xl sm:font-semibold">Géneros</h2>
 			<div class="flex flex-col items-start sm:gap-3 w-11/12 sm:m-auto sm:py-1 sm:text-2xl sm:font-semibold text-white overflow-x-auto">
-				<ul class="w-100 flex items-center gap-3">
-					<Cardgenero title="TRAP" href="#" imgSrc="images/trap-portada.jpg"/>
-					<Cardgenero title="RAP" href="#" imgSrc="images/disco-portada.jpg"/>
-					<Cardgenero title="RKT" href="#" imgSrc="images/trap-portada.jpg"/>
-					<Cardgenero title="Boom Bap" href="#" imgSrc="images/trap-portada.jpg"/>
+				<ul class="w-100 flex items-center gap-3" id="generosMusicales">
+					
 				</ul>
 			</div>
 	
 			<h2 class="text-white sm:pl-3 sm:text-xl sm:font-semibold sm:mt-5">Nuestra playlist</h2>
 			<section class="w-full sm:mt-2">
-				<ul class="w-full flex flex-col gap-1 items-start justify-start">
-					<Cardsong title="Chill fresh" genero='TRAP' srcBeat='audios/trap-flowdeoro.mp3' href="#" imgSrc="images/trap-tema.jpg"/>
-					<Cardsong title="Agressive" genero='RAP' srcBeat='audios/beat.mp3' href="#" imgSrc="images/trap-portada.jpg"/>
-					<Cardsong title="420 whit coffe" genero='HIP HOP' srcBeat='audios/beat.mp3' href="#" imgSrc="images/trap-portada.jpg"/>
+				<ul class="w-full flex flex-col gap-1 items-start justify-start" id="listaDeBeats">
+					
 				</ul>
 			</section>
 
 		</div>
 
 	</main>
+
+	<script>
+		var generosMusicales = [
+			{
+				srcImage: "images/trap-portada.jpg",
+				genero: "TRAP",
+				href: "#"
+			},
+			{
+				srcImage: "images/disco-portada.jpg",
+				genero: "HIP HOP",
+				href: "#"
+			},
+			{
+				srcImage: "images/trap-portada.jpg",
+				genero: "RKT",
+				href: "#"
+			},
+			{
+				srcImage: "images/trap-portada.jpg",
+				genero: "TRAP",
+				href: "#"
+			},
+			{
+				srcImage: "images/disco-portada.jpg",
+				genero: "HIP HOP",
+				href: "#"
+			},
+		];
+
+	
+		function mostrarGenerosMusicales() {
+			let container = document.getElementById("generosMusicales");
+
+			generosMusicales.forEach(function(genero) {
+				
+				let generoCard = document.createElement("li");
+		
+				generoCard.classList.add("genero-card");
+
+				generoCard.innerHTML = `
+					<a class="genero-card__a" href="${genero.href}">
+						<img class="genero-card__img" src="${genero.srcImage}" alt="Imagen del género musical ${genero.genero}">
+						<h3 genero-card__title>${genero.genero}</h3>
+					</a>
+				`;
+
+				container.appendChild(generoCard);
+			});
+		}
+
+		mostrarGenerosMusicales();
+	</script>
+	
+	<script>
+		var listaDeBeats = [
+			{
+				srcImg: "images/trap-portada.jpg",
+				srcBeat: "audios/beat.mp3",
+				nombre: "Diamante negro",
+				genero: "TRAP",
+				href: "#"
+			},
+			{
+				srcImg: "images/trap-portada.jpg",
+				srcBeat: "audios/trap-flowdeoro.mp3",
+				nombre: "Diamante negro",
+				genero: "TRAP",
+				href: "#"
+			},
+		];
+
+	
+		function mostrarListaDeBeats() {
+			let container = document.getElementById("listaDeBeats");
+
+			listaDeBeats.forEach(function(beat) {
+				
+				let beatCard = document.createElement("li");
+				beatCard.classList.add("beat-card");
+
+				beatCard.innerHTML = `
+				<a class="beat-card__a" href=${beat.href}>
+					<img class="beat-card__img" src=${beat.srcImg} alt="">
+					<div class="flex flex-col">
+						<h2 class="sm:text-sm">
+							${beat.nombre}
+						</h2>
+						<h3>
+							${beat.genero}
+						</h3>
+					</div>
+				</a>
+
+				<div class="play-btn-container">
+					<audio class="audio" controls style="display: none;">
+						<source src=${beat.srcBeat} type="audio/mp3">
+					</audio>
+					
+					<div class="customAudioControls">
+						<button class="playButton" id="playButton">
+							<ion-icon class="sm:text-3xl text-white p-2" name="play-circle-outline"></ion-icon>
+						</button>
+						<button class="pauseButton hidden" id="pauseButton">
+							<ion-icon class="sm:text-3xl text-white p-2" name="pause-circle-outline"></ion-icon>
+						</button>
+					</div>
+				</div>
+				`;
+
+				container.appendChild(beatCard);
+			});
+		}
+
+		mostrarListaDeBeats();
+
+		// Obtener referencias a todos los botones de reproducción y pausa
+		const playButtons = document.querySelectorAll('.playButton');
+		const pauseButtons = document.querySelectorAll('.pauseButton');
+		const audioPlayers = document.querySelectorAll('.audio');
+
+		// Función para detener todos los demás audios excepto el clic actual
+		function stopOtherAudios(currentAudio) {
+			audioPlayers.forEach(audio => {
+				if (audio !== currentAudio) {
+					audio.pause(); // Pausar el audio
+					const playButton = audio.parentElement.querySelector('.playButton');
+					const pauseButton = audio.parentElement.querySelector('.pauseButton');
+					playButton.classList.remove('hidden'); // Mostrar botón de reproducción
+					pauseButton.classList.add('hidden'); // Ocultar botón de pausa
+				}
+			});
+		}
+
+		// Variable para almacenar el índice del tema actualmente reproduciéndose
+		let currentPlayingIndex = null;
+
+		// Agregar event listeners a todos los botones de reproducción
+		playButtons.forEach((playButton, index) => {
+			playButton.addEventListener('click', function() {
+				// Si ya hay un tema reproduciéndose y no es el mismo que el que se está reproduciendo ahora, detenerlo y reiniciar su tiempo
+				if (currentPlayingIndex !== null && currentPlayingIndex !== index) {
+					audioPlayers[currentPlayingIndex].pause();
+					audioPlayers[currentPlayingIndex].currentTime = 0;
+					const playButton = playButtons[currentPlayingIndex];
+					playButton.classList.remove('hidden');
+					const pauseButton = pauseButtons[currentPlayingIndex];
+					pauseButton.classList.add('hidden');
+				}
+
+				// Guardar el índice del tema actualmente reproduciéndose
+				currentPlayingIndex = index;
+
+				// Ocultar botón de reproducción y mostrar botón de pausa
+				playButton.classList.add('hidden');
+				// Encontrar el botón de pausa asociado y mostrarlo
+				const pauseButton = playButton.nextElementSibling;
+				pauseButton.classList.remove('hidden');
+
+				// Reproducir el audio asociado
+				audioPlayers[index].play();
+			});
+		});
+
+		// Agregar event listeners a todos los botones de pausa
+		pauseButtons.forEach((pauseButton, index) => {
+			pauseButton.addEventListener('click', function() {
+				// Ocultar botón de pausa y mostrar botón de reproducción
+				pauseButton.classList.add('hidden');
+				// Encontrar el botón de reproducción asociado y mostrarlo
+				const playButton = pauseButton.previousElementSibling;
+				playButton.classList.remove('hidden');
+
+				// Pausar el audio asociado
+				audioPlayers[index].pause();
+			});
+		});
+	</script>
 </Layout>
 
-<style>
+<style >
+	
 	main {
 		margin: 0 auto;
 		padding: 0;
 		box-sizing: border-box;
 		padding: 0;
+		width: 80%;
 		}
 	
 	.hero-container{
